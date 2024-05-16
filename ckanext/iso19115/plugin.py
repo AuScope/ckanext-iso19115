@@ -9,6 +9,8 @@ except ImportError:
 from . import cli, interfaces, views, helpers
 from .logic import action
 
+from . import interface_ext
+
 try:
     config_declarations = tk.blanket.config_declarations
 except AttributeError:
@@ -22,7 +24,7 @@ class Iso19115Plugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IBlueprint)
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.ITemplateHelpers)
-    plugins.implements(interfaces.IIso19115, inherit=True)
+    plugins.implements(interface_ext.Iso19115, inherit=True)
 
     if IMetaexport:
         plugins.implements(IMetaexport, inherit=True)
