@@ -103,6 +103,7 @@ The two geometric primitives in the temporal dimension are the instant and the p
 		<complexContent>
 			<extension base="gml:AbstractTimePrimitiveType">
 				<attribute name="frame" type="anyURI" default="#ISO-8601"/>
+				<attribute name="gml:id" type="string" default="time-id"/>
 			</extension>
 		</complexContent>
 	</complexType>

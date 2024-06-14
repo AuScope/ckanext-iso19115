@@ -31,32 +31,31 @@ class Converter:
     def process(self):
         self._add_identifier()
         self._add_default_locale()
-        self._add_parent()
         self._add_scope()
 
         self._add_contacts()
         self._add_dates()
 
         self._add_standard()
-        self._add_profile()
-        self._add_alternative_reference()
-        self._add_other_locale()
-        self._add_linkage()
+        #self._add_profile()
+        #self._add_alternative_reference()
+        #self._add_other_locale()
+        #self._add_linkage()
         self._add_spatial_representation()
-        self._add_reference_system()
-        self._add_metadata_extension()
+        #self._add_reference_system()
+        #self._add_metadata_extension()
 
         self._add_identification()
 
-        self._add_content()
-        self._add_distribution()
+        #self._add_content()
+        #self._add_distribution()
         self._add_dq()
-        self._add_lineage()
-        self._add_catalogue()
+        #self._add_lineage()
+        #self._add_catalogue()
         self._add_constraints()
-        self._add_schema()
-        self._add_maintenance()
-        self._add_acquisition()
+        #self._add_schema()
+        # self._add_maintenance()
+        # self._add_acquisition()
 
     def finalize(self):
         ...
@@ -66,31 +65,22 @@ class Converter:
         return result
 
     def _add_identifier(self):
-        mcc.MD_Identifier
         identifier: mcc.MD_Identifier = h.id(self.pkg["id"], codeSpace="urn:uuid")
         self.data.metadataIdentifier = identifier
 
     def _add_default_locale(self):
-        lan.PT_Locale
         locale = h.locale(
             self.pkg.get("language") or tk.config.get("ckan.locale_default")
         )
         self.data.defaultLocale = locale
 
-    def _add_parent(self):
-        cit.CI_Citation
-        pass
-
     def _add_scope(self):
-        mdb.MD_MetadataScope
         scope: mdb.MD_MetadataScope = mdb.MD_MetadataScope(
             mcc.MD_ScopeCode("dataset"), h.cs("Dataset")
         )
-
         self.data.metadataScope.append(scope)
 
     def _add_contacts(self):
-        cit.CI_Responsibility
         for contact in self.pkg.get("contact", []):
             ind = cit.CI_Individual(
                 name=h.cs(contact.get("inidvidual")),
@@ -116,7 +106,6 @@ class Converter:
         return []
 
     def _add_dates(self):
-        cit.CI_Date
         has_creation = False
 
         for date in self.pkg.get("date_info", []):
@@ -134,30 +123,10 @@ class Converter:
             )
 
     def _add_standard(self):
-        cit.CI_Citation
         standard: cit.CI_Citation = h.citation("ISO 19115", edition="2016")
         self.data.metadataStandard.append(standard)
 
-    def _add_profile(self):
-        cit.CI_Citation
-        pass
-
-    def _add_alternative_reference(self):
-        cit.CI_Citation
-        pass
-
-    def _add_other_locale(self):
-        lan.PT_Locale
-        pass
-
-    def _add_linkage(self):
-        cit.CI_OnlineResource
-        pass
-
     def _add_spatial_representation(self):
-        # mcc.Abstract_SpatialRepresentation
-        msr.MD_GridSpatialRepresentation
-        msr.MD_VectorSpatialRepresentation
         for rep in self.pkg.get("vector_spatial_representation", []):
             self.data.spatialRepresentationInfo.append(
                 msr.MD_VectorSpatialRepresentation(
@@ -168,18 +137,7 @@ class Converter:
                 )
             )
 
-    def _add_reference_system(self):
-        mrs.MD_ReferenceSystem
-        pass
-
-    def _add_metadata_extension(self):
-        mex.MD_MetadataExtensionInformation
-        pass
-
     def _add_identification(self):
-        mcc.Abstract_ResourceDescription
-        mri.MD_DataIdentification
-        srv.SV_ServiceIdentification
 
         citation: cit.CI_Citation = h.citation(
             self.pkg["title"], identifier=h.id(self.pkg["id"])
@@ -195,35 +153,7 @@ class Converter:
         )
         self.data.add_identificationInfo(ident)
 
-        # for res in self.pkg["resources"]:
-        #     self.data.add_identificationInfo(
-        #         mri.MD_DataIdentification(
-        #             h.citation(
-        #                 res["name"], presentationForm="documentDigital"
-        #             ),
-        #             h.cs(res["description"]),
-        #             resourceFormat=[
-        #                 mrd.MD_Format(
-        #                     cit.CI_Citation(res["format"]),
-        #                     res.get("version"),
-        #                 )
-        #             ],
-        #         )
-        #     )
-
-    def _add_content(self):
-        # mcc.Abstract_ContentInformation
-        mrc.MD_FeatureCatalogueDescription
-        mrc.MD_CoverageDescription
-        mrc.MD_FeatureCatalogue
-        pass
-
-    def _add_distribution(self):
-        mrd.MD_Distribution
-        pass
-
     def _add_dq(self):
-        mdq.DQ_DataQuality
         for dq in self.pkg.get("data_quality", []):
             result = mdq.DQ_DescriptiveResult(
                 statement=h.cs(dq.get("details") or "...")
@@ -239,30 +169,6 @@ class Converter:
                     report=[report],
                 )
             )
-
-    def _add_lineage(self):
-        mrl.LI_Lineage
-        pass
-
-    def _add_catalogue(self):
-        mpc.MD_PortrayalCatalogueReference
-        pass
-
-    def _add_constraints(self):
-        mco.MD_Constraints
-        pass
-
-    def _add_schema(self):
-        mas.MD_ApplicationSchemaInformation
-        pass
-
-    def _add_maintenance(self):
-        mmi.MD_MaintenanceInformation
-        pass
-
-    def _add_acquisition(self):
-        mac.MI_AcquisitionInformation
-        pass
 
     def _make_user_contact(self, role: str, user_id: str):
         with contextlib.suppress(tk.NotAuthorized):

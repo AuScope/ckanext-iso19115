@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 @dataclass
 class MD_Constraints:
-    useLimitation: list[str] = field(default_factory=list)
+    useLimitation: gco.CharacterString
     constraintApplicationScope: Optional[mcc.MD_Scope] = None
     graphic: list[mcc.MD_BrowseGraphic] = field(default_factory=list)
     reference: list[cit.CI_Citation] = field(default_factory=list)

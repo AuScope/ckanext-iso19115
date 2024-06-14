@@ -13,3 +13,8 @@ class FileName(Atomic):
 @dataclass
 class MimeFileType(Atomic):
     value: str
+
+@dataclass
+# TODO: Add attribs for URI
+class Anchor(Atomic):
+    value: str

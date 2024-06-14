@@ -1,5 +1,8 @@
 from __future__ import annotations
+import logging
+log = logging.getLogger(__name__)
 import dataclasses
+import ast
 
 import datetime
 import os
@@ -51,7 +54,11 @@ def date(
 
 def date(dt, force_datetime=False):
     if isinstance(dt, str):
-        dt = datetime.datetime.fromisoformat(dt)
+        try:
+            dt = datetime.datetime.fromisoformat(dt[:23])
+        except ValueError as ve:
+            log.error(f"{ve}: Cannot format date: {dt}")
+            return None
     assert isinstance(dt, datetime.date)
 
     if (
@@ -102,6 +109,15 @@ def keyword(tag: str) -> mri.MD_Keywords:
     return mri.MD_Keywords([cs(tag)])
 
 
+def uri_keyword(val_list: list[str], uri_list: list[str], ktype: mri.MD_KeywordTypeCode,
+                thesaurusName: cit.CI_Citation) -> mri.MD_Keywords:
+    # TODO: Add uri attribs to anchor
+    return mri.MD_Keywords(
+        keyword=[gcx.Anchor(val) for val in val_list],
+        type=ktype,
+        thesaurusName=thesaurusName)
+
+
 def locale(lang: str) -> lan.PT_Locale:
     return lan.PT_Locale(lan.LanguageCode(lang))
 
@@ -109,6 +125,8 @@ def locale(lang: str) -> lan.PT_Locale:
 def id(id_: str, **kwargs) -> mcc.MD_Identifier:
     return mcc.MD_Identifier(code=cs(id_), **kwargs)
 
+def doi(doi:str, **kwargs) -> mcc.MD_Identifier:
+    return mcc.MD_Identifier(code=gcx.Anchor(doi), **kwargs)
 
 def contact(**kwargs) -> cit.CI_Contact:
     return cit.CI_Contact(**kwargs)
@@ -128,6 +146,23 @@ def address(
     country=None,
     email=None,
 ) -> cit.CI_Address:
-    return cit.CI_Address(
-        deliveryPoint, city, administrativeArea, postalCode, country, email
-    )
+    address = cit.CI_Address(deliveryPoint=deliveryPoint, electronicMailAddress=email)
+    #if deliveryPoint is not None:
+    #    address.deliveryPoint = deliveryPoint
+    if city is not None:
+        address.city = city
+    if administrativeArea is not None:
+        address.administrativeArea = administrativeArea
+    if postalCode is not None:
+        address.postalCode = postalCode
+    if country is not None:
+        address.country = country
+    #if email is not None:
+    #    address.electronicMailAddress = email
+    return address
+
+def safe_eval(e_str: str):
+    try:
+        return ast.literal_eval(e_str)
+    except (ValueError, SyntaxError):
+        return None

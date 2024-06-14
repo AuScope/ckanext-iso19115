@@ -5,9 +5,8 @@ import contextvars
 import enum
 import json
 import logging
-import operator
 import re
-from typing import Any, Dict, Iterable, List, Optional, Union
+from typing import Any, Iterable, Optional
 
 import exrex
 import xmlschema
@@ -89,7 +88,6 @@ class Builder:
         if len(data) < 2 or not isinstance(data[1], dict):
             data[1:1] = [{}]
         data[1].update(ns)
-
         el = self.root.encode(data, converter=xmlschema.JsonMLConverter)
         return el
 
