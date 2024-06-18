@@ -331,7 +331,7 @@ class Converter(ParentConverter):
         # Use the date the DOI was published as publication date
         published_date = self.pkg.get("doi_date_published", None)
         if published_date is not None:
-            date_list.append(cit.CI_Date(h.date(published_date), cit.CI_DateTypeCode("published")))
+            date_list.append(cit.CI_Date(h.date(published_date), cit.CI_DateTypeCode("publication")))
 
         # Use the deposit date as dataset created date
         deposit_date = self.pkg.get("deposit_date", None)
