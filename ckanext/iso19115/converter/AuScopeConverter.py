@@ -83,7 +83,7 @@ class Converter(ParentConverter):
         """ Add metadata lineage - i.e. Data Repository information
         """
         onlineRes = cit.CI_OnlineResource(
-            linkage="https://sample.data.auscope.org.au",
+            linkage="https://repository.data.auscope.org.au",
             protocol="WWW:LINK-1.0-http--link",
             description="Metadata landing page URL",
             name="AuScope Data Repository",
