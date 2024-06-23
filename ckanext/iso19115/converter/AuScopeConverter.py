@@ -82,8 +82,9 @@ class Converter(ParentConverter):
     def add_metadata_linkage(self):
         """ Add metadata lineage - i.e. Data Repository information
         """
+        linkage_url = "https://repository.data.auscope.org.au/dataset/" + self.pkg["id"]
         onlineRes = cit.CI_OnlineResource(
-            linkage="https://repository.data.auscope.org.au",
+            linkage=linkage_url,
             protocol="WWW:LINK-1.0-http--link",
             description="Metadata landing page URL",
             name="AuScope Data Repository",
