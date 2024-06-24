@@ -5,6 +5,7 @@ from typing import Any, Dict
 
 import pyproj
 
+import ckan.plugins.toolkit as tk
 from ckanext.iso19115.converter import Converter as ParentConverter
 
 from . import helpers as h
@@ -82,7 +83,8 @@ class Converter(ParentConverter):
     def add_metadata_linkage(self):
         """ Add metadata lineage - i.e. Data Repository information
         """
-        linkage_url = "https://repository.data.auscope.org.au/dataset/" + self.pkg["id"]
+        site_url = tk.config.get('ckan.site_url')
+        linkage_url = site_url + "/dataset/" + self.pkg["id"]
         onlineRes = cit.CI_OnlineResource(
             linkage=linkage_url,
             protocol="WWW:LINK-1.0-http--link",
